@@ -28,7 +28,7 @@ public class RF06Tests {
 				jenkins.escuchar("@jenkins cuánto es 5 - 2 * 2")
 			);
 		
-		Assert.assertEquals( // No entiende "de" como multiplicación
+		Assert.assertEquals(
 				"@delucas 10",
 				jenkins.escuchar("@jenkins cuánto es el 10% de 100")
 			);

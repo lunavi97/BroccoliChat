@@ -74,5 +74,10 @@ public class CalculoTest {
 	public void conNumerosNegativos() {
 		assertTrue(calc.calcular("-23+5*-2+5-3/(-2*3)-5") == -23.0 + 5.0 * - 2.0 + 5.0 - 3.0 / (-2.0 * 3.0) - 5.0);
 	}
+	
+	@Test
+	public void multiplicaciónImplicitaEnPorcentaje() {
+		assertTrue(calc.calcular("10% de 100") == (10.0 / 100.0) * 100.0);
+	}
 
 }

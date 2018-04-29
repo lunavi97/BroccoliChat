@@ -32,7 +32,8 @@ public class Calculo {
 		for(String[] reemplazo : reemplazarPorNegativo) { // Hacer los reemplazos correspondientes al operador unario
 			expresion = expresion.replace(reemplazo[0], reemplazo[1]);
 		}
-		
+		expresion = expresion.replace("de", "*"); // Multiplicación implícita en porcentaje
+
 		return expresion;
 	}
 
