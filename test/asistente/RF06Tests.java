@@ -50,5 +50,13 @@ public class RF06Tests {
 		
 		// agregar otros casos
 	}
+	
+	@Test
+	public void calculoConResultadoDecimal() {
+		Assert.assertEquals(
+				"@delucas 3.5",
+				jenkins.escuchar("@jenkins cuánto es 7 / 2")
+			);
+	}
 
 }

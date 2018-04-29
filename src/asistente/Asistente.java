@@ -18,7 +18,10 @@ public class Asistente {
 			// RF06: realizar cálculos
 			Calculo calc = new Calculo();
 			Double resultado = calc.calcular(mensaje);
-			return respuesta + Math.round(resultado);
+			if(resultado % 1 == 0) // Si es entero devolver redondeado
+				return respuesta + Math.round(resultado);
+			else // Si tiene decimales devolverlo como real
+				return respuesta + resultado;
 		}
 		
 		return respuesta + "Próximamente. Estamos agregando código para que puedas realizar otras acciones";
