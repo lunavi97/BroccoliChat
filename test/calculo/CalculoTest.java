@@ -76,8 +76,18 @@ public class CalculoTest {
 	}
 	
 	@Test
-	public void multiplicaci�nImplicitaEnPorcentaje() {
+	public void multiplicaciónImplicitaEnPorcentaje() {
 		assertTrue(calc.calcular("10% de 100") == (10.0 / 100.0) * 100.0);
+	}
+	
+	@Test
+	public void raizCuadrada() {
+		assertTrue(calc.calcular("√25") == Math.sqrt(25.0));
+	}
+	
+	@Test
+	public void raizCubica() {
+		assertTrue(calc.calcular("2 + 5 * 3√81 + 3") == 2.0 + 5.0 * Math.pow(81.0, 1.0 / 3.0) + 3.0);
 	}
 
 }

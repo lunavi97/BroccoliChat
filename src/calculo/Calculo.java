@@ -3,7 +3,7 @@ package calculo;
 
 import java.util.StringTokenizer;
 
-// Clase que calcula el resultado de una expresi�n recibida por string a trav�s de un �rbol
+// Clase que calcula el resultado de una expresión recibida por string a través de un árbol
 public class Calculo {
 
 	private Pila pOperandos;              	// Pila de operandos
@@ -11,12 +11,14 @@ public class Calculo {
 	private final String espacioEnBlanco; 	// Cadena de espacios en blanco
 	private final String operadores;		// Cadena con operadores para expresiones
 	private String[][] reemplazarPorNegativo = {{"+-", "+N"}, {"*-", "*N"}, {"--", "-N"}, {"/-", "/N"}, {"^-", "^N"}, {"(-", "(N"}};
+	private String[][] reemplazarPorRaizCuadrada = {{"+√", "+2√"}, {"*√", "*2√"}, {"-√", "-2√"}, {"/√", "/2√"}, {"^√", "^2√"}, {"(√", "(2√"}};
+
 
 	public Calculo() {
 		pOperandos = new Pila();
 		pOperadores = new Pila();
 		espacioEnBlanco = " \t";
-		operadores = ")+-*/N^%(";  // Acomodados por precedencia
+		operadores = ")+-*/N^√%(";  // Acomodados por precedencia
 	}
 
 	public double calcular(String expresion) {
@@ -26,18 +28,23 @@ public class Calculo {
 	}
 
 	private String normalizar(String expresion) { 
-		// Diferenciar el operador resta (binario) con los n�meros negativos (unario)
+		// Diferenciar el operador resta (binario) con los números negativos (unario)
 		if(expresion.startsWith("-")) // Si el primer caracter es - reemplazar por N
 			expresion = "N" + expresion.substring(1);
 		for(String[] reemplazo : reemplazarPorNegativo) { // Hacer los reemplazos correspondientes al operador unario
 			expresion = expresion.replace(reemplazo[0], reemplazo[1]);
 		}
-		expresion = expresion.replace("de", "*"); // Multiplicaci�n impl�cita en porcentaje
-
+		expresion = expresion.replace("de", "*"); // Multiplicación implícita en porcentaje
+		if(expresion.startsWith("√")) // Si el primer caracter es √ reemplazar por 2√
+			expresion = "2√" + expresion.substring(1);
+		for(String[] reemplazo : reemplazarPorRaizCuadrada) { // Hacer los reemplazos correspondientes a la raíz cuadrada
+			expresion = expresion.replace(reemplazo[0], reemplazo[1]);
+		}
+		
 		return expresion;
 	}
 
-	// Construir un �rbol a partir de una expresi�n aritm�tica
+	// Construir un árbol a partir de una expresión aritmética
 	private NodoArbol construirArbol(String expresion) {
 		StringTokenizer tokenizer;
 		String token;
@@ -54,7 +61,7 @@ public class Calculo {
 				;
 
 			else if (operadores.indexOf(token) < 0) {
-				// Si es un operando: guardar como nodo del �rbol
+				// Si es un operando: guardar como nodo del árbol
 				pOperandos.poner(new NodoArbol(token));
 
 			} else if(token.equals(")")) {
@@ -62,11 +69,11 @@ public class Calculo {
 				while (!pOperadores.estaVacia() && !pOperadores.verTope().equals("(")) {
 					guardarSubArbol();
 				}
-				pOperadores.sacar();  // Sacar el par�ntesis izquierdo
+				pOperadores.sacar();  // Sacar el paréntesis izquierdo
 
 			} else {
 				if (!token.equals("(") && !pOperadores.estaVacia()) {
-					// Operador diferente de cualquier par�ntesis
+					// Operador diferente de cualquier paréntesis
 					String op = (String) pOperadores.verTope();
 					while (!op.equals("(") && !pOperadores.estaVacia()
 							&& operadores.indexOf(op) >= operadores.indexOf(token)) {
@@ -96,7 +103,7 @@ public class Calculo {
 		return raiz;
 	}
 
-	// Almacenar un sub�rbol en la pila
+	// Almacenar un subárbol en la pila
 	private void guardarSubArbol() {
 		NodoArbol op2 = (NodoArbol) pOperandos.sacar();
 		NodoArbol op1 = (NodoArbol) pOperandos.sacar();
@@ -111,18 +118,19 @@ public class Calculo {
 
 	private boolean esOperador(Object valor) {
 		return valor.equals("+") || valor.equals("-") || valor.equals("*")
-				|| valor.equals("/") || valor.equals("^") || valor.equals("%") || valor.equals("N");
+				|| valor.equals("/") || valor.equals("^") || valor.equals("%")
+				|| valor.equals("N") || valor.equals("√");
 	}
 
 	private double operar(NodoArbol n) {
 
 		if(esOperador(n.obtenerValor())) {
-			// Si es operador: hacer operaci�n
+			// Si es operador: hacer operación
 			return operacion(n);
 		}
 
 		else {
-			// Si es n�mero: devolverlo
+			// Si es número: devolverlo
 			return Double.parseDouble((String) n.obtenerValor());
 		}
 	}
@@ -151,6 +159,9 @@ public class Calculo {
 
 		else if(operador.obtenerValor().equals("N"))
 			return 0.0 - operar(operador.nodoIzquierdo());
+		
+		else if(operador.obtenerValor().equals("√"))
+			return Math.pow(operar(operador.nodoDerecho()), 1 / operar(operador.nodoIzquierdo()));
 
 		else
 			return (Double) null;
