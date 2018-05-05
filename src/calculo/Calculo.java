@@ -105,14 +105,13 @@ public class Calculo {
 
 	// Almacenar un subárbol en la pila
 	private void guardarSubArbol() {
-		NodoArbol op2 = (NodoArbol) pOperandos.sacar();
-		NodoArbol op1 = (NodoArbol) pOperandos.sacar();
+		NodoArbol op = (NodoArbol) pOperandos.sacar();
 
-		if(pOperadores.verTope().equals("%") || pOperadores.verTope().equals("N")) {
-			pOperandos.poner(op1);
-			pOperandos.poner(new NodoArbol(op2, pOperadores.sacar(), null));
-		} else {
-			pOperandos.poner(new NodoArbol(op1, pOperadores.sacar(), op2));
+		if(pOperadores.verTope().equals("%") || pOperadores.verTope().equals("N")) { // Si es una operación unaria
+			pOperandos.poner(new NodoArbol(op, pOperadores.sacar(), null));
+		} else { // Sino
+			NodoArbol opIzq = (NodoArbol) pOperandos.sacar(); // Sacar operador izquierdo para realizar operación binaria
+			pOperandos.poner(new NodoArbol(opIzq, pOperadores.sacar(), op));
 		}
 	}
 
